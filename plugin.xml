@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+    <extension
+         id="scanBuilder"
+         name="Scan Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="com.shredcode.scanplugin.builder.ScanBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="scanNature"
+         name="Scan Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <runtime>
+         <run
+               class="com.shredcode.scanplugin.builder.ScanNature">
+         </run>
+      </runtime>
+      <builder
+            id="ScanPlugin.scanBuilder">
+      </builder>
+   </extension>
+    <extension
+          point="org.eclipse.ui.preferencePages">
+       <page
+             class="com.shredcode.scanplugin.preferences.ScanPreferencePage"
+             id="com.shredcode.scanplugin.preferences.ScanPreferencePage"
+             name="Scan Annotations">
+       </page>
+    </extension>
+    <extension
+          point="org.eclipse.core.runtime.preferences">
+       <initializer
+             class="com.shredcode.scanplugin.preferences.PreferenceInitializer">
+       </initializer>
+    </extension>
+    <extension
+          point="org.eclipse.ui.popupMenus">
+       <objectContribution
+             adaptable="true"
+             id="ScanPlugin.contribution1"
+             nameFilter="*"
+             objectClass="org.eclipse.core.resources.IProject">
+          <action
+                class="com.shredcode.scanplugin.builder.ToggleNatureAction"
+                enablesFor="+"
+                id="ScanPlugin.addRemoveNatureAction"
+                label="Add/Remove Unused Annotation Scan Nature"
+                menubarPath="additions">
+          </action>
+       </objectContribution>
+    </extension>
+    <extension
+          id="unusedProblem"
+          name="Unused Problem"
+          point="org.eclipse.core.resources.markers">
+       <super
+             type="org.eclipse.core.resources.problemmarker">
+       </super>
+       <super type="org.eclipse.core.resources.textmarker"></super>
+       <persistent
+             value="true">
+       </persistent>
+    </extension>
+    <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            markerType="ScanPlugin.unusedProblem"
+            class="com.shredcode.scanplugin.resolutions.AnnotationNotUsedResolutionGenerator">
+      </markerResolutionGenerator>
+   </extension>
+</plugin>
