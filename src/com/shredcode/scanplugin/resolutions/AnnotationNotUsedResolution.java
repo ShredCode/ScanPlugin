@@ -1,5 +1,6 @@
 package com.shredcode.scanplugin.resolutions;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
@@ -23,19 +25,36 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.ui.IMarkerResolution;
+import org.eclipse.ui.views.markers.WorkbenchMarkerResolution;
 
 import com.shredcode.scanplugin.utils.ScanPluginUtils;
 
 
-public class AnnotationNotUsedResolution implements IMarkerResolution{
+public class AnnotationNotUsedResolution extends WorkbenchMarkerResolution {
 	
 	private final static Logger LOGGER = Logger.getLogger(AnnotationNotUsedResolution.class.getName());
 
 	@Override
 	public String getLabel() {
 		return "Delete annotated variable never used";
+	}
+	
+	@Override
+	public IMarker[] findOtherMarkers(IMarker[] paramArrayOfIMarker) {
+		List<IMarker> others = new ArrayList<IMarker>();
+		for (IMarker marker : paramArrayOfIMarker) {
+			try {
+				if ("ScanPlugin.unusedProblem".equalsIgnoreCase(marker
+						.getType())) {
+					others.add(marker);
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		return others.toArray(new IMarker[0]);
 	}
 
 	@Override
@@ -113,6 +132,16 @@ public class AnnotationNotUsedResolution implements IMarkerResolution{
             
         }
 		
+	}
+
+	@Override
+	public String getDescription() {
+		return "Delete annotated variable never used";
+	}
+
+	@Override
+	public Image getImage() {
+		return null;
 	}
 
 }
