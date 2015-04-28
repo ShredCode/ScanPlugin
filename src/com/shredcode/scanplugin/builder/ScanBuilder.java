@@ -140,7 +140,8 @@ public class ScanBuilder extends IncrementalProjectBuilder {
 								"Unused variable with Annnotation @" + bindstoAnnotation.get(
 										binding),
 								parsedUnit.getLineNumber(bindstoNode.get(
-										binding).getStartPosition()),
+										binding).getStartPosition()),bindstoNode.get(
+												binding),
 								IMarker.SEVERITY_ERROR, bindstoAnnotation.get(
 										binding));
 					}
@@ -167,7 +168,7 @@ public class ScanBuilder extends IncrementalProjectBuilder {
 	}
 
 	private void addMarker(IFile file, String message, int lineNumber,
-			int severity, String annotation) {
+			VariableDeclarationFragment node, int severity, String annotation) {
 		try {
 			IMarker marker = file.createMarker(MARKER_TYPE);
 			marker.setAttribute("annotationType", annotation);
@@ -177,6 +178,8 @@ public class ScanBuilder extends IncrementalProjectBuilder {
 				lineNumber = 1;
 			}
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+			marker.setAttribute ( IMarker.CHAR_START, node.getStartPosition() ) ;
+			marker.setAttribute ( IMarker.CHAR_END, node.getStartPosition() + node.getLength() ) ; 
 		} catch (CoreException e) {
 		}
 	}
