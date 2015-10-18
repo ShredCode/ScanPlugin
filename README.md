@@ -1,6 +1,5 @@
 # ScanPlugin
 Eclipse plugin to scan for unused annotated variables  
-Work in progress
 
 ## Description
 This plugin is for scanning for annotations like AUTOWIRED and MOCK that eclipse seems to go back and forth 
